@@ -1,9 +1,9 @@
-FROM maven:3.9.5-eclipse-temurin-17 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
+# Use Nginx to serve static files
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Copy all static files to Nginx web directory
+COPY . .
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
